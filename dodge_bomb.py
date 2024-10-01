@@ -12,6 +12,7 @@ DELTA = {pg.K_UP: (0, -5),
          pg.K_RIGHT: (+5, 0),
          }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+accs = [a for a in range(1, 11)]
 
 
 def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
@@ -26,6 +27,17 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     if obj_rct.top < 0 or HEIGHT < obj_rct.bottom:
         tate = False
     return yoko, tate
+
+
+def create_bomb_surfaces():
+    accs = [a for a in range(1, 11)]
+    bd_imgs = []
+    for r in range(1, 11):
+        bd_img = pg.Surface((20*r, 20*r))
+        bd_img.set_colorkey((0, 0, 0))
+        pg.draw.circle(bd_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bd_imgs.append(bd_img)
+    return accs, bd_imgs
 
 
 def main():
@@ -45,6 +57,7 @@ def main():
     vx, vy = +5, +5  #爆弾の速度
     clock = pg.time.Clock()
     tmr = 0
+    accs, bd_imgs = create_bomb_surfaces()
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -82,13 +95,17 @@ def main():
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
+
+        avx = vx * accs[min(tmr // 500, 9)]
+        avy = vy * accs[min(tmr // 500, 9)]
         screen.blit(kk_img, kk_rct)
-        bd_rct.move_ip((vx, vy))
+        bd_rct.move_ip((avx, avy))
         yoko, tate = check_bound(bd_rct)
         if not yoko:
             vx *= -1
         if not tate:
             vy *= -1
+        bd_img = bd_imgs[min(tmr // 500, 9)]
         screen.blit(bd_img, bd_rct)
         pg.display.update()
         tmr += 1
