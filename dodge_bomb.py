@@ -1,6 +1,7 @@
 import os
 import random
 import sys
+import time
 import pygame as pg
 
 
@@ -32,6 +33,7 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")    
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
+    kc_img = pg.image.load("fig/8.png")
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
     bd_img = pg.Surface((20, 20))
@@ -50,7 +52,18 @@ def main():
         screen.blit(bg_img, [0, 0]) 
         if kk_rct.colliderect(bd_rct):
             #こうかとんが重なっていたら
-            return
+            blackout = pg.Surface((1100, 650))
+            blackout.set_alpha(128)
+            blackout.fill((0, 0, 0))
+            screen.blit(blackout, (0, 0))
+            fonto = pg.font.Font(None, 80)
+            txt = fonto.render("Game Over", True, (255, 255, 255))
+            screen.blit(txt, [400, 200])
+            screen.blit(kc_img,[350, 200])
+            screen.blit(kc_img,[720, 200])
+            pg.display.update()
+            time.sleep(5)
+            
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
