@@ -34,6 +34,7 @@ def create_bomb_surfaces():
     """
     引数：なし
     戻り値：加速度、加速後の画像
+    1～10でrを回し、それぞれの半径に掛け算を行う
     """
     accs = [a for a in range(1, 11)]
     bd_imgs = []
@@ -45,6 +46,11 @@ def create_bomb_surfaces():
     return accs, bd_imgs
 
 def create_rotated_images(kk_img):
+    """
+    引数：kk_img
+    戻り値：rotated_images
+    上、下、左、右で値を設定し、それに対応したこうかとんの画像に切り替える
+    """
     rotated_images = {}
     for key, angle in {pg.K_UP: 180, pg.K_DOWN: 0, pg.K_LEFT: -90, pg.K_RIGHT: 90}.items():
         rotated_images[(0, 0)] = kk_img  # Default image
@@ -78,15 +84,15 @@ def main():
         screen.blit(bg_img, [0, 0]) 
         if kk_rct.colliderect(bd_rct):
             #こうかとんが重なっていたら
-            blackout = pg.Surface((1100, 650))
-            blackout.set_alpha(128)
+            blackout = pg.Surface((1100, 650))  #黒の四角を表示
+            blackout.set_alpha(128)  #透明度変更
             blackout.fill((0, 0, 0))
             screen.blit(blackout, (0, 0))
-            fonto = pg.font.Font(None, 80)
-            txt = fonto.render("Game Over", True, (255, 255, 255))
+            fonto = pg.font.Font(None, 80)  #フォントサイズ変更
+            txt = fonto.render("Game Over", True, (255, 255, 255))  #game overを白文字で表示
             screen.blit(txt, [400, 200])
-            screen.blit(kc_img,[350, 200])
-            screen.blit(kc_img,[720, 200])
+            screen.blit(kc_img,[350, 200])  #こうかとんを表示
+            screen.blit(kc_img,[720, 200])  #こうかとんを表示
             pg.display.update()
             time.sleep(5)
             
@@ -110,8 +116,8 @@ def main():
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         kk_img = rotated_images.get(tuple(sum_mv), kk_img)
         screen.blit(kk_img, kk_rct)
-        avx = vx * accs[min(tmr // 500, 9)]
-        avy = vy * accs[min(tmr // 500, 9)]
+        avx = vx * accs[min(tmr // 500, 9)]  #accsに応じてx座標加速
+        avy = vy * accs[min(tmr // 500, 9)]  #accsに応じてy座標加速
         screen.blit(kk_img, kk_rct)
         bd_rct.move_ip((avx, avy))
         yoko, tate = check_bound(bd_rct)
@@ -119,7 +125,7 @@ def main():
             vx *= -1
         if not tate:
             vy *= -1
-        bd_img = bd_imgs[min(tmr // 500, 9)]
+        bd_img = bd_imgs[min(tmr // 500, 9)]  #爆弾の拡大
         screen.blit(bd_img, bd_rct)
         pg.display.update()
         tmr += 1
