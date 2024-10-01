@@ -31,6 +31,10 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     return yoko, tate
 
 def create_bomb_surfaces():
+    """
+    引数：なし
+    戻り値：加速度、加速後の画像
+    """
     accs = [a for a in range(1, 11)]
     bd_imgs = []
     for r in range(1, 11):
