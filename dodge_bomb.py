@@ -6,11 +6,13 @@ import pygame as pg
 
 
 WIDTH, HEIGHT = 1100, 650
+
 DELTA = {pg.K_UP: (0, -5),
          pg.K_DOWN: (0, +5),
          pg.K_LEFT: (-5, 0),
          pg.K_RIGHT: (+5, 0),
          }
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 accs = [a for a in range(1, 11)]
 
@@ -28,7 +30,6 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
         tate = False
     return yoko, tate
 
-
 def create_bomb_surfaces():
     accs = [a for a in range(1, 11)]
     bd_imgs = []
@@ -39,6 +40,13 @@ def create_bomb_surfaces():
         bd_imgs.append(bd_img)
     return accs, bd_imgs
 
+def create_rotated_images(kk_img):
+    rotated_images = {}
+    for key, angle in {pg.K_UP: 180, pg.K_DOWN: 0, pg.K_LEFT: -90, pg.K_RIGHT: 90}.items():
+        rotated_images[(0, 0)] = kk_img  # Default image
+        rotated_images[DELTA[key]] = pg.transform.rotozoom(kk_img, angle, 1.0)
+        rotated_images[DELTA[key]] = pg.transform.rotozoom(kk_img, angle, 1.0)
+    return rotated_images
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -58,6 +66,7 @@ def main():
     clock = pg.time.Clock()
     tmr = 0
     accs, bd_imgs = create_bomb_surfaces()
+    rotated_images = create_rotated_images(kk_img)
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -95,7 +104,8 @@ def main():
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
-
+        kk_img = rotated_images.get(tuple(sum_mv), kk_img)
+        screen.blit(kk_img, kk_rct)
         avx = vx * accs[min(tmr // 500, 9)]
         avy = vy * accs[min(tmr // 500, 9)]
         screen.blit(kk_img, kk_rct)
