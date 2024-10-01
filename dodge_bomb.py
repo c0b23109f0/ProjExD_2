@@ -49,7 +49,7 @@ def create_rotated_images(kk_img):
     """
     引数：kk_img
     戻り値：rotated_images
-    上、下、左、右で値を設定し、それに対応したこうかとんの画像に切り替える
+    上、下、左、右で値を設定し、それに対応したこうかとんの画像に切り替える。
     """
     rotated_images = {}
     for key, angle in {pg.K_UP: 180, pg.K_DOWN: 0, pg.K_LEFT: -90, pg.K_RIGHT: 90}.items():
